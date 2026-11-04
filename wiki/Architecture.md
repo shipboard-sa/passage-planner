@@ -13,6 +13,10 @@ Invocation: n/a (reference doc)
 
 # Architecture
 
+## Pipeline overview
+
+![Pipeline architecture](pipeline-architecture.svg)
+
 ## Process layout
 
 One Python package (`passage_planner`, `src/`) that runs three ways: a CLI, a FastAPI backend

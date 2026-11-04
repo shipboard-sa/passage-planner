@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 520">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-feedback" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#993C1D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="30" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="500" fill="#0B2545">Passage planning pipeline</text>
+
+  <!-- Column headers -->
+  <text x="110" y="62" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#73726C">INPUTS</text>
+  <text x="430" y="62" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#73726C">PROCESSING</text>
+  <text x="790" y="62" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#73726C">OUTPUTS</text>
+
+  <!-- ═══ INPUT BOXES (teal) ═══ -->
+
+  <!-- GPX route file -->
+  <rect x="20" y="80" width="180" height="52" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.75"/>
+  <text x="110" y="102" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#04342C">GPX route file</text>
+  <text x="110" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#0F6E56">Waypoints and legs</text>
+
+  <!-- GRIB weather data -->
+  <rect x="20" y="148" width="180" height="52" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.75"/>
+  <text x="110" y="170" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#04342C">GRIB weather data</text>
+  <text x="110" y="188" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#0F6E56">Wind, waves, current</text>
+
+  <!-- Vessel polar file -->
+  <rect x="20" y="216" width="180" height="52" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.75"/>
+  <text x="110" y="238" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#04342C">Vessel polar file</text>
+  <text x="110" y="256" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#0F6E56">Performance curves</text>
+
+  <!-- Vessel config -->
+  <rect x="20" y="284" width="180" height="52" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.75"/>
+  <text x="110" y="306" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#04342C">Vessel config</text>
+  <text x="110" y="324" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#0F6E56">Hull speed, fuel, tanks</text>
+
+  <!-- Arrival places -->
+  <rect x="20" y="352" width="180" height="52" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.75"/>
+  <text x="110" y="374" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#04342C">Arrival places</text>
+  <text x="110" y="392" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#0F6E56">Destinations catalog</text>
+
+  <!-- ═══ PROCESSING BOXES (blue) ═══ -->
+
+  <!-- Route parser -->
+  <rect x="310" y="80" width="240" height="52" rx="6" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.75"/>
+  <text x="430" y="102" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#042C53">Route parser</text>
+  <text x="430" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#185FA5">GPX to waypoint sequence</text>
+
+  <!-- Weather overlay -->
+  <rect x="310" y="148" width="240" height="52" rx="6" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.75"/>
+  <text x="430" y="170" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#042C53">Weather overlay</text>
+  <text x="430" y="188" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#185FA5">GRIB to per-leg conditions</text>
+
+  <!-- Polar engine -->
+  <rect x="310" y="216" width="240" height="52" rx="6" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.75"/>
+  <text x="430" y="238" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#042C53">Polar engine</text>
+  <text x="430" y="256" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#185FA5">Conditions x polar = speed/fuel</text>
+
+  <!-- Routing optimizer -->
+  <rect x="310" y="284" width="240" height="52" rx="6" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.75"/>
+  <text x="430" y="306" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#042C53">Routing optimizer</text>
+  <text x="430" y="324" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#185FA5">Evaluate legs, find windows</text>
+
+  <!-- Briefing generator -->
+  <rect x="310" y="352" width="240" height="52" rx="6" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.75"/>
+  <text x="430" y="374" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#042C53">Briefing generator</text>
+  <text x="430" y="392" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#185FA5">Compile all data</text>
+
+  <!-- ═══ OUTPUT BOXES (coral) ═══ -->
+
+  <!-- Passage briefing -->
+  <rect x="680" y="80" width="240" height="52" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.75"/>
+  <text x="800" y="102" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#4A1B0C">Passage briefing</text>
+  <text x="800" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#993C1D">HTML / PDF report</text>
+
+  <!-- Float plan -->
+  <rect x="680" y="148" width="240" height="52" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.75"/>
+  <text x="800" y="170" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#4A1B0C">Float plan</text>
+  <text x="800" y="188" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#993C1D">Emergency contact document</text>
+
+  <!-- Weather summary -->
+  <rect x="680" y="216" width="240" height="52" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.75"/>
+  <text x="800" y="238" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#4A1B0C">Weather summary</text>
+  <text x="800" y="256" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#993C1D">Leg-by-leg conditions</text>
+
+  <!-- Fuel/water budget -->
+  <rect x="680" y="284" width="240" height="52" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.75"/>
+  <text x="800" y="306" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#4A1B0C">Fuel / water budget</text>
+  <text x="800" y="324" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#993C1D">Consumption per leg</text>
+
+  <!-- Departure window -->
+  <rect x="680" y="352" width="240" height="52" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.75"/>
+  <text x="800" y="374" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#4A1B0C">Departure window</text>
+  <text x="800" y="392" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#993C1D">Optimal timing recommendation</text>
+
+  <!-- ═══ ARROWS: Inputs → Processing ═══ -->
+
+  <!-- GPX → Route parser -->
+  <line x1="200" y1="106" x2="308" y2="106" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- GRIB → Weather overlay -->
+  <line x1="200" y1="174" x2="308" y2="174" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Polar → Polar engine -->
+  <line x1="200" y1="242" x2="308" y2="242" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Vessel config → Polar engine (angled) -->
+  <path d="M200 310 L260 310 L260 255 L308 255" fill="none" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Arrival places → Briefing generator -->
+  <line x1="200" y1="378" x2="308" y2="378" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- ═══ ARROWS: Between processing stages (vertical) ═══ -->
+
+  <!-- Route parser → Weather overlay -->
+  <line x1="430" y1="132" x2="430" y2="146" stroke="#185FA5" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Weather overlay → Polar engine -->
+  <line x1="430" y1="200" x2="430" y2="214" stroke="#185FA5" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Polar engine → Routing optimizer -->
+  <line x1="430" y1="268" x2="430" y2="282" stroke="#185FA5" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Routing optimizer → Briefing generator -->
+  <line x1="430" y1="336" x2="430" y2="350" stroke="#185FA5" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- ═══ ARROWS: Processing → Outputs ═══ -->
+
+  <!-- Briefing generator → all outputs (fan out) -->
+  <path d="M550 365 L620 365 L620 106 L678 106" fill="none" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+  <path d="M550 370 L630 370 L630 174 L678 174" fill="none" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+  <path d="M550 375 L640 375 L640 242 L678 242" fill="none" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+  <path d="M550 380 L650 380 L650 310 L678 310" fill="none" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="550" y1="385" x2="678" y2="385" stroke="#73726C" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- ═══ FEEDBACK LOOP ═══ -->
+  <!-- Routing optimizer → Weather overlay (re-query for different windows) -->
+  <path d="M310 310 L280 310 L280 174 L308 174" fill="none" stroke="#993C1D" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow-feedback)"/>
+  <text x="272" y="242" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#993C1D" transform="rotate(-90, 272, 242)">Re-query</text>
+
+  <!-- ═══ LEGEND ═══ -->
+  <rect x="20" y="440" width="900" height="60" rx="6" fill="none" stroke="#E0DDD5" stroke-width="0.5"/>
+
+  <rect x="40" y="458" width="16" height="16" rx="3" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+  <text x="64" y="472" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#2C2C2A">Data sources (files, APIs, config)</text>
+
+  <rect x="280" y="458" width="16" height="16" rx="3" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+  <text x="304" y="472" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#2C2C2A">Processing stages (Python)</text>
+
+  <rect x="510" y="458" width="16" height="16" rx="3" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+  <text x="534" y="472" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#2C2C2A">Output products</text>
+
+  <line x1="700" y1="466" x2="730" y2="466" stroke="#993C1D" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="738" y="472" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#2C2C2A">Feedback loop (window search)</text>
+</svg>
