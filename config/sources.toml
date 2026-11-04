@@ -1,0 +1,206 @@
+# Weather and reference data source registry.
+#
+# tier maps directly to the briefing provenance tags:
+#   primary       -> [Primary Source: <provider>]        (gov / hydrographic / numerical model)
+#   professional  -> [Professional Forecast: <provider>] (licensed meteorologist / routing service)
+#   secondary     -> "WARNING SECONDARY DATA:" prefix    (crowd-sourced / third-party repackager)
+#
+# enabled = false keeps a source defined but out of the fetch rotation.
+# Secrets are named via *_env fields and read from the environment at runtime.
+#
+# NOTE: the your-pi-hostname RPi already runs two hourly boat-position-following fetchers that
+# write to the 'boat' bucket - weather_owm (OpenWeatherMap air wx) and
+# weather_open_meteo_marine (waves/swell). Those cover the CURRENT position only. The
+# sources below are for ROUTE-CORRIDOR forecasts at future waypoint times, plus the raw
+# model grids a weather-routing solve needs. Do not duplicate the boat's current-position feeds.
+
+config_version = 1
+
+# ---------------------------------------------------------------------------
+# Numerical weather models (GRIB)
+# ---------------------------------------------------------------------------
+
+[[weather_source]]
+id = "gfs"
+kind = "grib"
+tier = "primary"
+enabled = true
+provider = "NOAA NCEP"
+endpoint = "https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl"
+cycle_hours = [0, 6, 12, 18]
+max_forecast_hours = 384
+step_hours = 3
+variables = ["UGRD", "VGRD", "GUST", "PRMSL", "PRATE", "CAPE"]
+notes = "workhorse model; native bbox + variable subsetting keeps a passage pull to single-digit MB"
+
+[[weather_source]]
+id = "ecmwf_ifs"
+kind = "grib"
+tier = "primary"
+enabled = true
+provider = "ECMWF"
+endpoint = "https://data.ecmwf.int/forecasts"
+cycle_hours = [0, 12]
+max_forecast_hours = 240
+step_hours = 3
+variables = ["10u", "10v", "msl"]
+notes = "open data; skill cross-check vs GFS; GFS/ECMWF divergence is the forecast-confidence signal"
+
+[[weather_source]]
+id = "gfs_wave"
+kind = "grib"
+tier = "primary"
+enabled = true
+provider = "NOAA NCEP"
+endpoint = "https://nomads.ncep.noaa.gov/cgi-bin/filter_gfswave.pl"
+cycle_hours = [0, 6, 12, 18]
+max_forecast_hours = 384
+step_hours = 3
+variables = ["HTSGW", "PERPW", "DIRPW", "WVHGT", "WVPER", "SWELL"]
+notes = "seas: significant wave height, dominant period, direction"
+
+[[weather_source]]
+id = "hrrr"
+kind = "grib"
+tier = "primary"
+enabled = true
+provider = "NOAA NCEP"
+endpoint = "https://nomads.ncep.noaa.gov/cgi-bin/filter_hrrr_2d.pl"
+cycle_hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+max_forecast_hours = 48
+step_hours = 1
+variables = ["UGRD", "VGRD", "GUST", "MSLMA"]
+notes = "3 km CONUS + Gulf; near-shore legs only (Gulf shakedown, FL coastwise)"
+
+[[weather_source]]
+id = "rtofs"
+kind = "grib"
+tier = "primary"
+enabled = false
+provider = "NOAA NCEP"
+endpoint = "https://nomads.ncep.noaa.gov/cgi-bin/filter_rtofs.pl"
+cycle_hours = [0]
+max_forecast_hours = 192
+step_hours = 6
+variables = ["UOGRD", "VOGRD"]
+notes = "surface currents (Gulf Stream / Loop Current) - enable before the Bahamas crossing"
+
+# ---------------------------------------------------------------------------
+# Official human-forecaster text products (authoritative for go / no-go)
+# ---------------------------------------------------------------------------
+
+[[weather_source]]
+id = "nws_offshore"
+kind = "text"
+tier = "primary"
+enabled = true
+provider = "NWS / NHC"
+endpoint = "https://tgftp.nws.noaa.gov/data/raw/fz/"
+zones = ["fzus52.knhc", "fzus54.kkey", "fznt02.knhc"]
+notes = "Offshore Waters Forecasts - Gulf of Mexico + SW N Atlantic; outranks raw GRIB"
+
+[[weather_source]]
+id = "nws_coastal"
+kind = "text"
+tier = "primary"
+enabled = true
+provider = "NWS"
+endpoint = "https://tgftp.nws.noaa.gov/data/raw/fz/"
+zones = ["fzus54.klix", "fzus54.kmob", "fzus52.ktbw"]
+notes = "Coastal Waters Forecasts - New Orleans, Mobile, Tampa Bay - for the day-hop legs"
+
+[[weather_source]]
+id = "nws_highseas"
+kind = "text"
+tier = "primary"
+enabled = false
+provider = "NWS / NHC"
+endpoint = "https://tgftp.nws.noaa.gov/data/raw/fz/fznt01.knhc..txt"
+notes = "Atlantic High Seas Forecast - enable for any leg past the continental shelf"
+
+# ---------------------------------------------------------------------------
+# Tropical (hard requirement Jun-Nov)
+# ---------------------------------------------------------------------------
+
+[[weather_source]]
+id = "nhc_tropical"
+kind = "tropical"
+tier = "primary"
+enabled = true
+provider = "NHC"
+endpoint = "https://www.nhc.noaa.gov/CurrentStorms.json"
+outlook_endpoint = "https://www.nhc.noaa.gov/xml/TWOAT.xml"
+cone_corridor_nm = 200
+cone_lookahead_h = 96
+notes = "auto-flag any Invest or named system whose cone intersects route corridor + margin"
+
+# ---------------------------------------------------------------------------
+# Professional routing service
+# ---------------------------------------------------------------------------
+
+[[weather_source]]
+id = "mwxc"
+kind = "email_text"
+tier = "professional"
+enabled = false
+provider = "Marine Weather Center (Chris Parker)"
+ingest = "imap"
+imap_host_env = "HYLAS_MWXC_IMAP_HOST"
+imap_user_env = "HYLAS_MWXC_IMAP_USER"
+imap_pass_env = "HYLAS_MWXC_IMAP_PASS"
+mailbox = "INBOX"
+sender_filter = "chris@mwxc.com"
+notes = "daily text report, acronym-heavy; retain raw verbatim; timing leads for Bahamas/Caribbean. Re-subscribe month-to-month ~2-4 wks before the Bahamas."
+
+# ---------------------------------------------------------------------------
+# Convenience / secondary
+# ---------------------------------------------------------------------------
+
+[[weather_source]]
+id = "open_meteo_marine_route"
+kind = "json"
+tier = "secondary"
+enabled = true
+provider = "Open-Meteo"
+endpoint = "https://marine-api.open-meteo.com/v1/marine"
+notes = "route-corridor wave/swell forecast at waypoint times. Same API the boat's hourly weather_open_meteo_marine sidecar uses for current position - this call is multi-point, forward-timed. Cross-check tier."
+
+# ---------------------------------------------------------------------------
+# Reference data (not weather)
+# ---------------------------------------------------------------------------
+
+[[data_source]]
+id = "noaa_enc"
+kind = "chart"
+tier = "primary"
+enabled = true
+provider = "NOAA Office of Coast Survey"
+endpoint = "https://charts.noaa.gov/ENCs/ENCs.shtml"
+notes = "depth + overhead clearance validation, US waters (full FL coverage)"
+
+[[data_source]]
+id = "explorer_charts"
+kind = "chart"
+tier = "secondary"
+enabled = false
+provider = "Explorer Chartbooks"
+notes = "Bahamas de-facto standard; commercial => SECONDARY tag even though best available. Enable for Bahamas planning."
+
+[[data_source]]
+id = "ndbc"
+kind = "observations"
+tier = "primary"
+enabled = true
+provider = "NDBC"
+endpoint = "https://www.ndbc.noaa.gov/data/realtime2/"
+stations = ["42003", "42012", "42019", "42020", "42036", "42039", "42040"]
+notes = "buoy observations for forecast verification along the Gulf track"
+
+[[data_source]]
+id = "coops_tides"
+kind = "tides"
+tier = "primary"
+enabled = true
+provider = "NOAA CO-OPS"
+endpoint = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter"
+notes = "tide + current predictions for the tide-gate timing math"

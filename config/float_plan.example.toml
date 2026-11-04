@@ -1,0 +1,52 @@
+# Static float-plan facts -- the fields on the USPS Float Plan (v10.2) that
+# don't come from vessel.toml or the passage plan. Filled once, reused every
+# passage. See `passage-planner float-plan --help`.
+
+[vessel]
+hailing_port = "Your City, ST"
+official_number = "000000"
+hin = "ABC12345D678"
+vessel_type = "Cutter"
+hull_material = "Fiberglass"
+hull_trim_colors = "White hull"
+prominent_features = "Center cockpit, solar array"
+anchor_line_length_ft = 300.0
+
+[comms]
+call_sign = "WXX0000"
+radio1_type = "VHF-FM"
+radio1_freq_mon = "16/9"
+radio2_type = "VHF-FM"
+radio2_freq_mon = "16/9"
+cell_sat_phone = "Starlink; Garmin inReach"
+operator_email = "skipper@example.com"
+epirb_uin = "0000000000000000"
+tracking_note = "Tracked via Garmin inReach"
+
+[equipment]
+aboard = [
+  "NAV-Radar", "NAV-Compass", "NAV-Maps", "NAV-DepthSounder", "NAV-GPS", "NAV-Charts",
+  "VDS-EDL", "VDS-Flag", "VDS-FlareAerial", "VDS-FlareHandheld", "VDS-SignalMirror",
+  "ADS-Horn", "ADS-Whistle",
+  "ADD-Anchor", "ADD-FireExtinguisher", "ADD-Flashlight", "ADD-Raft", "ADD-FoodAvail",
+  "ADD-Dewatering", "ADD-Water",
+]
+
+[operator]
+name = "John Doe"
+address = "123 Marina Drive"
+city = "Anytown"
+state = "FL"
+zip = "00000"
+phone = "555-123-4567"
+gender = "M"
+dob = "1970-01-01"
+plb_uin = "000000000"
+
+[contacts]
+contact1_name = "Shore Contact"
+contact1_phone = "555-000-0000"
+contact2_name = "Second Contact"
+contact2_phone = "555-000-0001"
+rescue_authority = "TowBoatUS"
+rescue_authority_phone = "1-800-391-4869"

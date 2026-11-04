@@ -1,0 +1,38 @@
+# papers.toml -- issue / expiry dates for the vessel's official documents.
+# The briefing's "Document readiness" check uses these to report expired or
+# expiring documents. Fill in from your own papers.
+
+[documents."USCG Certificate of Documentation"]
+kind    = "vessel_documentation"
+path    = "../Papers of Record/COD.pdf"
+issued  = "2025-01-01"
+expires = "2030-01-01"
+note    = "Your vessel's COD. Update issued/expires from the actual certificate."
+
+[documents."FCC Ship Station Licence"]
+kind    = "radio_licence"
+path    = "../Papers of Record/FCC/station_licence.pdf"
+issued  = "2025-01-01"
+expires = "2035-01-01"
+note    = "Your call sign and MMSI. 10-year term."
+
+[documents."Yacht insurance policy"]
+kind    = "insurance_policy"
+path    = "../Papers of Record/Insurance/policy.pdf"
+issued  = "2026-01-01"
+expires = "2027-01-01"
+note    = "Annual renewal. Check nav limits and named-windstorm exclusion."
+
+[documents."Passports"]
+kind    = "passport"
+path    = "../Papers of Record/IDs/"
+issued  = "2020-01-01"
+expires = "2030-01-01"
+note    = "Check the six-month-validity rule for Caribbean destinations."
+
+[documents."CBP annual user-fee decal (DTOPS)"]
+kind    = "cbp_decal"
+path    = "../Papers of Record/DTOPS.pdf"
+issued  = "2026-01-01"
+expires = "2026-12-31"
+note    = "Calendar-year decal. Renew at dtops.cbp.dhs.gov before re-entering the US."

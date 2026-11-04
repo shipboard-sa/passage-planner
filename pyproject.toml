@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "passage-planner"
+version = "0.1.0"
+description = "Weather-informed passage planning, briefings, and float plans for cruising sailboats"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",           # async HTTP for the Open-Meteo forecast fetcher
+    "python-docx>=1.1",      # native .docx briefing export
+    "markdown-it-py>=3.0",   # Markdown -> HTML/token stream for export
+    "mdit-py-plugins>=0.4",  # GFM table support for markdown-it
+    "influxdb-client>=1.44", # InfluxDB reader/writer (pending the boat token)
+    "timezonefinder>=6.5",   # offline lat/lon -> IANA zone for boat-local briefing times
+    "tzdata",                # IANA zone database (Windows ships none)
+    "pypdf>=5.0",            # fills the USPS Float Plan AcroForm
+    "shapely>=2.0",          # point-to-coastline distance (coastal.py)
+]
+
+[project.scripts]
+passage-planner = "passage_planner.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+web = [
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+    "python-multipart>=0.0.12",  # FastAPI needs this to parse multipart/form-data uploads
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# These modules deliberately emit en/em dashes and the multiplication sign in
+# user-facing prose destined for Word/PDF.
+"src/passage_planner/briefing.py" = ["RUF001", "RUF002", "RUF003"]
+"src/passage_planner/ciq/render.py" = ["RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src"]
+
+[[tool.mypy.overrides]]
+module = ["timezonefinder"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["shapely", "shapely.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# numpy (a timezonefinder dependency) ships stubs that use 3.12-only `type`
+# statement syntax; we never import it directly, so don't parse it.
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,web]"
+      - name: Ruff
+        run: ruff check src tests
+      - name: Mypy
+        run: python -m mypy src
+      - name: Pytest
+        run: python -m pytest -q
+
+  image:
+    # Builds the Docker image (spec v5) and checks it starts as the stack's
+    # non-root UID with an empty var/ mount. Nothing is pushed until the
+    # registry is decided with Colin.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build
+        run: docker build -t passage-planner:ci .
+      - name: Start as UID 2300 and probe /api/health
+        run: |
+          mkdir -p "$RUNNER_TEMP/var" && sudo chown 2300:2300 "$RUNNER_TEMP/var"
+          docker run -d --name routing --user 2300:2300 -p 8100:8100             -v "$RUNNER_TEMP/var:/srv/code/routing/var" passage-planner:ci
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8100/api/health && exit 0
+            sleep 2
+          done
+          docker logs routing
+          exit 1

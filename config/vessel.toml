@@ -1,0 +1,183 @@
+# Your Boat Model vessel configuration for route & arrival planning.
+# Every value here is a planning input. PROVISIONAL markers mean the figure is
+# an estimate to be replaced with measured data once the boat has a track record.
+# Secrets are NEVER stored here - fields ending in *_env name an environment
+# variable that the loader reads at runtime.
+
+config_version = 1
+
+[vessel]
+name = "Your Vessel"
+model = "Your Boat Model"
+designer = "Your Designer"
+rig = "cutter"
+year = 1990
+mmsi = "000000000"
+influx_vessel_tag = "your-vessel"   # default tag on the your-pi-hostname 'boat' bucket
+loa_ft = 51.0
+beam_ft = 14.75
+displacement_lb = 35000          # PROVISIONAL - confirm from documentation / weigh
+
+[vessel.draft]
+# static_ft is the physical number only. planning_ft drives ALL depth math.
+static_ft = 6.5                  # 1990 brochure figure - NOT used for planning
+actual_min_ft = 7.0              # measured on the hard, light
+actual_max_ft = 8.0              # measured on the hard, cruising-loaded
+planning_ft = 8.0                # worst-case loaded draft
+ukc_margin_ft = 2.0              # under-keel clearance required on top of planning_ft
+
+[vessel.air_draft]
+# Composite measured by the skipper: 61 ft slip-measured cabin-top-to-masthead
+# + ~3 ft whip antennas + ~5 ft waterline-to-cabin-top freeboard.
+masthead_measured_ft = 61.0
+antenna_ft = 3.0
+freeboard_ft = 5.0
+planning_ft = 70.0               # measured composite, rounded up
+clearance_buffer_ft = 5.0        # required overhead clearance = planning_ft + buffer (75 ft)
+
+[vessel.water]
+# Fresh-water tankage covers COOKING + HYGIENE only. Drinking water is bottled
+# (cases carried), topped up with a ~2 gal jerry can filled each time the
+# watermaker runs - that is outside this budget.
+tank_gal = 150.0
+per_person_gpd = 3.0             # tank draw per person per day (cooking + washing)
+watermaker_installed = true
+watermaker_commissioned = false  # commission once in clear water - NOT for the Gulf shakedown
+watermaker_gph = 0.0             # rated output - fill in when known
+
+[propulsion]
+engine = "Yanmar 4JH80"
+rated_hp = 80
+fuel_capacity_gal = 200.0        # approximate, tank-vs-gauge NOT yet calibrated
+fuel_reserve_frac = 0.15         # hold this fraction in reserve for range calculations
+
+[propulsion.cruise]
+speed_kn = 7.0
+burn_gph = 2.25                  # PROVISIONAL - Yanmar 4JH80 estimate at cruise
+motorsail_burn_gph = 1.6        # PROVISIONAL
+
+[performance]
+# Wind (Garmin masthead via GND 10) + STW (Airmar DST810) are both live on N2K, so the previous automation partner's
+# empirical polar-derivation pipeline (Polar-Methodology.md) already publishes a live
+# 'polar_baseline' InfluxDB measurement (tags twa_deg/tws_kn, field boat_speed_kn) in the
+# same 'boat' bucket, covered by the existing read-only token - confirmed live 2026-09-17.
+# polar_source=derived reads it (InfluxReader.polar_baseline()); this project only ever
+# consumes the previous automation partner's output here, never derives/refines one itself. Soft-fallback: if
+# [infra.influx] enabled=false, the token/LAN isn't reachable, or the measurement has no
+# data, briefing generation silently falls back to the static file below - flip
+# infra.influx.enabled once HYLAS_INFLUX_TOKEN is a persistent env var on the ship PC.
+# 2026-10-07: set to "baseline" - The InfluxDB (the only source of the derived polar) did not
+# carry over into Ship's Automation at the 10-06 cut-over, so "derived" only ever timed out and fell
+# back to this same file. Re-pointing the polar is CHECKPOINT Open 1.
+polar_source = "baseline"        # baseline | derived
+polar_file = "config/baseline.pol"   # fallback when 'derived' can't reach InfluxDB; copy of boat-automation:data/polars/baseline.pol
+fleet_target_avg_kn = 7.0        # progress average the router defends with the engine
+light_air_speed_kn = 4.5         # The skipper's rule: sail down to 4-5 kn by mood, motor below that
+hull_max_speed_kn = 9.0          # practical max (cited in the departure SOP); caps any polar cell
+reef_heel_deg = 15.0             # standing order: reef above this heel
+# Upwind planning: a leg drawn straight into the wind is analysed as motor (or motorsail
+# above ~8 kn TWS) - The skipper's rule is "just motor into it if it makes sense". The analyzer flags
+# the beat; the on-water call (tack vs motor) is the skipper's.
+
+[safety.thresholds]
+wave_hs_max_m = 3.0              # forecast significant wave height flag
+wind_sustained_max_kn = 25.0    # sustained TWS flag
+wind_gust_max_kn = 35.0         # PROVISIONAL - gust flag
+beat_twa_min_deg = 45.0         # sustained TWA below this into head seas => flag
+
+[safety.current]
+# Wind-against-current caution (steep/breaking seas, the classic Gulf Stream hazard).
+# PROVISIONAL - seamanship rule-of-thumb, not measured or sourced; tune if a real
+# Gulf Stream crossing shows these wrong in either direction. See wiki/Design-Decisions.md.
+wind_against_current_tws_min_kn = 15.0      # sustained wind at/above this...
+wind_against_current_current_min_kn = 1.5   # ...opposing current at/above this...
+wind_against_current_angle_deg = 120.0      # ...opposed by at least this angle => flag
+
+[safety.watch_alert]
+# "Wake the captain" triggers from the departure SOP - emitted verbatim in the briefing's
+# watch-standing orders, and the reference values for any future underway alerting.
+wind_speed_change_kn = 10.0     # increase or decrease
+wind_dir_shift_deg = 30.0       # persistent shift
+pressure_drop_mb_3h = 2.0       # significant barometric drop
+hazard_cpa_nm = 2.0             # CPA below this without a VHF-coordinated passing plan
+
+[safety.depth]
+tide_gate_enabled = true         # compute the tide window where planning_ft + tide clears
+live_sounder_available = true    # Airmar DST810 on the bus - use for underway UKC cross-check
+sounder_depth_path = "environment.depth.belowTransducer"   # confirm exact path once token exists
+
+# Boats travelling with the fleet. Shared anchorages, channels, and bridges are
+# planned against the fleet's draft for arrival, departure and anchoring (a lifting
+# keel counts at its keel-UP draft; the keel-down draft is for open water only) and
+# the tallest air draft, not this vessel's alone.
+[[buddy_boat]]
+name = "SV Steel Breeze"
+mmsi = "000000001"     # call sign XXXXXX, per MarineTraffic 2026-09-22
+draft_ft = 14.0        # keel + rudder DOWN: open-water sailing only, NOT used at ports/anchorages
+lifting_keel = true
+draft_up_ft = 8.0      # keel UP - ~7-8 ft, the draft for arrival, departure and anchoring
+air_draft_ft = 90.0
+telemetry = false      # minimally instrumented - no live data from her
+notes = "Custom 63' steel, former open-ocean racer, new deck for cruising. Lifting keel + rudder: 14 ft down / ~8 ft up - sails keel-up off the wind, so shared anchorages match Your Vessel. Much bigger/faster; racier polar, especially upwind. Experienced sailors, new to cruising. Joint planning."
+
+[shore_contact]
+# Designated shore agent for float plans. Goes into the generated float-plan
+# summary. If you version-control this file publicly, move this section to a
+# local override or gitignore the config.
+name = "Shore Contact"
+email = "shore-contact@example.com"
+
+[infra]
+# Fallback zone for briefing times when a point falls outside every zone polygon
+# (rare - the offline lookup covers open ocean with nautical Etc/GMT zones). Each
+# waypoint's time is rendered in ITS OWN civil zone, derived from its lat/lon, so
+# a passage that crosses the Central/Eastern line shows both correctly.
+timezone = "America/Chicago"
+
+[infra.influx]
+# Per the previous automation partner's influxdb_readonly_access.md (2026-09-08): plain HTTP on the LAN IP,
+# NOT the your-pi-hostname hostname (that resolves to the Tailscale addr) and NOT a
+# Traefik/TLS route. Only reachable from the boat LAN (192.168.1.0/24).
+url = "http://192.168.1.21:8086"
+org = "your-org"
+org_id = "your-org-id"
+bucket = "boat"                       # shared bucket - route data uses its own measurements
+bucket_id = "your-bucket-id"
+token_env = "HYLAS_INFLUX_TOKEN"      # READ-ONLY token, runtime env only, NEVER stored here
+# NOTE: the token the previous automation partner issued is read-only (write -> HTTP 403). The route_forecast
+# write-back below is aspirational - it needs a separate write-scoped token or Colin
+# to widen this one. Reading nav/wind/depth/engine history for planning works today.
+route_forecast_measurement = "route_forecast"
+read_timeout_s = 10.0
+write_timeout_s = 5.0
+local_buffer_path = "var/influx_buffer.jsonl"   # store-and-forward if a future writer lands
+# VERIFIED 2026-09-08: reader works live against 192.168.1.21:8086 with the read-only token.
+# LIVE as of 2026-09-18: HYLAS_INFLUX_TOKEN is now a persistent env var on the ship PC
+# and polar_baseline is wired into the briefing pipeline (service._load_polar()) -
+# `[performance] polar_source = "derived"` now actually reads the previous automation partner's live polar
+# instead of falling back to config/baseline.pol.
+# 2026-10-07: DISABLED - this InfluxDB was part of the previous automation partner's stack and is gone since the 10-06 Ship's
+# Automation cut-over (D-105); our Pi serves SignalK :3000 + a history API :8090 instead. Kept for
+# reference until routing is re-pointed (CHECKPOINT Open 1).
+enabled = false
+
+[infra.signalk]
+url = "https://signalk.your-pi-hostname.your-vessel.us"
+token_env = "HYLAS_SIGNALK_TOKEN"
+enabled = false                      # credentials TBD
+
+[infra.ops_panel]
+# The vessel-ops-panel maintenance/inventory SQLite DB (read-only). Path relative
+# to this config dir's parent (the routing project root), or absolute.
+db_path = "../mx-inv/vessel_local.db"   # moved here by the sailboat directory reorg
+soon_buffer_days = 10                 # also list days-interval tasks coming due this soon after
+enabled = true
+
+[infra.papers]
+# Official document set. Files older than acquired_after, outside a "current"
+# subdir (Purchase/, Concept 2025/, FCC/, IDs/), are treated as legacy candidates.
+records_dir = "../../Papers of Record"
+extra_dirs = ["../../Insurance"]
+acquired_after = "2025-01-01"         # Your Vessel was bought spring 2025
+overrides_path = "config/papers.toml" # hand/Claude-supplied issue+expiry dates per doc
+enabled = true

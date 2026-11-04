@@ -1,0 +1,15 @@
+# Purpose: Allowlist build context for the routing image - only what the Dockerfile copies.
+# Version: v1 (2026-09-24)
+# Scope: PRODUCTION - read by docker build (CI).
+# Architecture: hylas-routing; keeps config/ (crew roster, float plan), var/, .venv,
+#   node_modules and every stray file out of the image by ignoring EVERYTHING first.
+*
+!pyproject.toml
+!src/
+!data/
+!backend/
+!frontend/
+frontend/node_modules
+frontend/dist
+**/__pycache__
+**/*.pyc

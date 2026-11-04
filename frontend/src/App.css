@@ -1,0 +1,639 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+header h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+}
+
+.subtitle {
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+.brief-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.field-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+input,
+textarea {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+textarea {
+  font-family: var(--mono);
+  font-size: 13px;
+  resize: vertical;
+}
+
+.inline-field {
+  display: flex;
+  gap: 8px;
+}
+
+.inline-field input {
+  flex: 1;
+}
+
+.crew-roster {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+}
+
+.checkbox-row input[type='checkbox'] {
+  width: auto;
+}
+
+.checkbox-field {
+  gap: 8px;
+}
+
+.guest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guest-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.guest-row input[type='text'],
+.guest-row input[type='date'] {
+  flex: 1;
+}
+
+.guest-row select {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.advanced {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.advanced summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.advanced .field {
+  margin-top: 12px;
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  align-self: auto;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.banner {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.banner.error {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.banner.warning {
+  background: var(--accent-bg);
+}
+
+.banner ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.result {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.result h2 {
+  margin-top: 0;
+}
+
+.stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.depart-eta {
+  margin-bottom: 16px;
+}
+
+.downloads {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.download-link {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.markdown-preview pre {
+  white-space: pre-wrap;
+  background: var(--code-bg);
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 480px;
+  overflow: auto;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.guard p {
+  margin: 8px 0;
+}
+
+.guard-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Research with Claude panel (shore logistics) */
+.research-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.research-panel .banner {
+  margin-top: 0;
+}
+.consent p {
+  margin: 8px 0;
+}
+.research-job {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+}
+.research-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.research-ports {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.port-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+.port-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.port-name {
+  font-weight: 600;
+  color: var(--text-h);
+}
+.badge {
+  font-size: 12px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--code-bg);
+}
+.badge.running {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.badge.failed {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.resolved,
+.port-note {
+  font-size: 13px;
+}
+.resolved {
+  font-style: italic;
+}
+.port-error {
+  font-size: 13px;
+  color: var(--danger);
+}
+
+/* Arrival & stops picker */
+.arrival-picker {
+  gap: 8px;
+}
+.stop-chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  font-size: 14px;
+  color: var(--text-h);
+}
+.chip.unlisted {
+  border-style: dashed;
+}
+.chip-kind {
+  font-size: 11px;
+  color: var(--text);
+  background: var(--code-bg);
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+.error-text {
+  color: var(--danger, #b3261e);
+  font-size: 13px;
+}
+.link-button {
+  background: transparent;
+  border: none;
+  padding: 2px 6px;
+  color: var(--accent, #3b6fd4);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+}
+.fleet-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fleet-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+.fleet-boat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+.fleet-boat input[type='checkbox'] {
+  width: auto;
+}
+.fleet-detail {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.85;
+}
+.fleet-form {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fleet-form h4 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-h);
+}
+.fleet-lookup {
+  margin: 4px 0;
+  padding: 8px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fleet-lookup ul.hint {
+  margin: 0;
+  padding-left: 18px;
+}
+.chip-role {
+  font-size: 12px;
+  padding: 1px 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+}
+.documents-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.documents-list li {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.documents-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.documents-label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-h);
+}
+.comms-panel h4 {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--text-h);
+}
+.comms-panel h4:first-child {
+  margin-top: 0;
+}
+.chip-remove {
+  padding: 0 8px;
+  line-height: 1.4;
+  background: transparent;
+  color: var(--text);
+  border: none;
+}
+.picker-box {
+  position: relative;
+}
+.picker-results {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.picker-results button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  background: transparent;
+  color: var(--text-h);
+  border: none;
+  font-weight: 400;
+}
+.picker-results button:hover {
+  background: var(--accent-bg);
+}
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.other-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.other-form input {
+  flex: 1;
+  min-width: 180px;
+}
+.picker-box input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Country-first picking */
+.sub-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.country-pick,
+.place-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.place-pick input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.place-group-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin: 8px 0 2px;
+}
+.place-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.place-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  background: transparent;
+  color: var(--text-h);
+  border: 1px solid transparent;
+  font-weight: 400;
+}
+.place-row:hover:not(:disabled) {
+  background: var(--accent-bg);
+  border-color: var(--border);
+}
+.place-row.picked {
+  opacity: 0.55;
+}
+.place-island {
+  color: var(--text);
+  font-size: 12px;
+}
+.place-pick {
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+/* Depth check */
+.depth-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.depth-panel .banner {
+  margin-top: 0;
+}
+.depth-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.depth-row {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.depth-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.depth-inputs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.depth-inputs label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  flex: 1;
+  min-width: 160px;
+}
+.depth-inputs input {
+  width: 100%;
+  box-sizing: border-box;
+}

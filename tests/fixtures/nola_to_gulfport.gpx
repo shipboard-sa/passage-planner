@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="test-fixture" xmlns="http://www.topografix.com/GPX/1/1">
+  <rte>
+    <name>NOLA - Rigolets - Gulfport (shakedown leg 1)</name>
+    <rtept lat="30.1637" lon="-89.0900">
+      <name>Rigolets Pass</name>
+      <desc>Depart Lake Pontchartrain via the Rigolets, Fort Pike bridge 72ft</desc>
+    </rtept>
+    <rtept lat="30.2350" lon="-88.9000">
+      <name>Lake Borgne E</name>
+    </rtept>
+    <rtept lat="30.2650" lon="-88.7000">
+      <name>MS Sound GIWW</name>
+    </rtept>
+    <rtept lat="30.3400" lon="-89.0817">
+      <name>Gulfport Harbor entrance</name>
+      <desc>Federal channel, 12ft controlling</desc>
+    </rtept>
+  </rte>
+</gpx>

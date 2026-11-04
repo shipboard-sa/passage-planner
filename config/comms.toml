@@ -1,0 +1,47 @@
+# Static comms facts -- the vessel-level Starlink/T-Mobile/Maya setup, used by
+# `passage-planner brief` to add a per-country "Communications configuration"
+# subsection (7d) with recommendations based on local conditions, economics,
+# and (for Starlink) billing-cycle timing. Filled once, reused every passage.
+#
+# TODO markers are real gaps -- confirm/replace before relying on this file.
+
+[starlink]
+plan = "Personal Maritime ($185/mo) -- confirmed 2026-09-10 as the plan once underway"
+billing_cycle_day = 24    # confirmed by owner decision carries over from the Residential plan
+ocean_mode_usd_per_gb = 6.0   # effective 2026-09-27 (was $2/GB) -- metered data beyond 12 NM
+# priority_gb intentionally unset: Personal Maritime has no monthly high-speed GB cap within
+# 12 NM of the coast -- it's unlimited there, and Ocean Mode beyond that is metered per GB
+# instead of drawn from an allotment, so there's no cycle-cap number to record here.
+notes = """\
+Currently on Residential at the dock; switching to Personal Maritime before departure. \
+TODO before switching: register the vessel with Starlink \
+(name, flag state, LOA, HIN/MMSI, a copy of the COD registration certificate); confirm \
+whether the installed dish qualifies as-is (not publicly documented as of 2026-09-10).\
+"""
+
+[t_mobile]
+plan = "T-Mobile (exact tier TBD)"
+roaming_included = true
+notes = """\
+Includes free international data roaming (2G-class, ~256 kbps) in 200+ destinations; a paid \
+high-speed day pass is available for real work, roughly $5-15/day depending on plan tier. On a \
+Maya eSIM for the primary connection abroad -- T-Mobile is the free background fallback.\
+"""
+
+[maya_esim]
+scope = "Regional multi-country data bundle (Caribbean + Central America)"
+notes = """\
+One eSIM profile covers the Caribbean/Central America region; buy data in flat bundles \
+(roughly $10-50 for 3-30 days, or ~$1.67/day on the 30-day bundle) rather than swapping eSIMs \
+per country.\
+"""
+
+[router]
+model = "GL.iNet Spitz AX (GL-X3000)"
+notes = """\
+Dual-SIM WiFi 6 cellular gateway with Multi-WAN (Failover + Load-Balance). Configure it in \
+Failover mode with priority cheapest-first -- T-Mobile SIM, then a phone's Maya eSIM shared in \
+via WiFi-repeater/tethering, Starlink last on Ethernet WAN -- so routed devices automatically \
+prefer the cheap connections and only fall back to metered Ocean Mode when cellular is truly \
+out of range. TODO: confirm the actual failover priority order once configured underway.\
+"""
