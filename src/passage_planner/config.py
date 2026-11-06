@@ -210,6 +210,8 @@ class SignalKConfig:
     enabled: bool
 
     def token(self) -> str:
+        if not self.token_env:
+            return ""
         value = os.environ.get(self.token_env, "")
         if self.enabled and not value:
             raise MissingSecretError(self.token_env, "Signal K access token")
@@ -735,7 +737,7 @@ def _parse_infra(raw: dict[str, Any], fn: str) -> InfraConfig:
     sk_raw = _table(raw, "signalk", fn, ctx)
     signalk = SignalKConfig(
         url=_str(sk_raw, "url", fn, sctx),
-        token_env=_str(sk_raw, "token_env", fn, sctx),
+        token_env=_str(sk_raw, "token_env", fn, sctx, default=""),
         enabled=bool(sk_raw.get("enabled", False)),
     )
 

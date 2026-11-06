@@ -162,9 +162,10 @@ local_buffer_path = "var/influx_buffer.jsonl"   # store-and-forward if a future 
 enabled = false
 
 [infra.signalk]
-url = "https://signalk.your-pi-hostname.your-vessel.us"
-token_env = "HYLAS_SIGNALK_TOKEN"
-enabled = false                      # credentials TBD
+# Ship's Automation Pi — SignalK readonly API, no auth needed for reads.
+# Re-pointed 2026-11-06 from retired hostname (CHECKPOINT Open 1).
+url = "http://192.168.1.21:3000"
+enabled = true
 
 [infra.ops_panel]
 # The vessel-ops-panel maintenance/inventory SQLite DB (read-only). Path relative
