@@ -72,6 +72,9 @@ from .weather.compare import ForecastComparison
 from .weather.model import RouteForecast
 from .weather.tropical import TropicalOutlook
 
+from .activecaptain import ActiveCaptainClient, RoutePoi
+from .errors import ActiveCaptainError, MissingSecretError
+
 
 @dataclass(frozen=True)
 class BriefResult:
@@ -310,6 +313,23 @@ def run_brief(args: argparse.Namespace) -> BriefResult:
     except CommsError as exc:
         warn(f"comms config failed ({exc}); section left generic")
 
+    ac_pois: tuple[RoutePoi, ...] = ()
+    ac_cfg = app.vessel.infra.activecaptain
+    if ac_cfg is not None and ac_cfg.enabled:
+        try:
+            wps = [(w.lat, w.lon) for w in route.waypoints]
+            client = ActiveCaptainClient(
+                cache_dir=resolve_path(args.config, ac_cfg.cache_dir),
+                api_key=ac_cfg.token(),
+                env=ac_cfg.env,
+                timeout_s=ac_cfg.timeout_s,
+            )
+            ac_pois = tuple(client.near_route(
+                wps, radius_nm=ac_cfg.search_radius_nm,
+            ))
+        except (ActiveCaptainError, MissingSecretError) as exc:
+            warn(f"ActiveCaptain lookup failed ({exc})")
+
     def read(path: Path | None) -> str | None:
         return path.read_text(encoding="utf-8") if path is not None else None
 
@@ -333,6 +353,7 @@ def run_brief(args: argparse.Namespace) -> BriefResult:
         logistics_markdown=read(args.logistics_file),
         clock=clock,
         parker_text=read(getattr(args, "parker_file", None)),
+        activecaptain_pois=ac_pois,
     )
     markdown = build_briefing(inputs)
 

@@ -50,6 +50,7 @@ from .logistics import coverage_gaps, strip_template_preamble
 from .notices import NoticeReport, render_notices_markdown
 from .ops import DueStatus as MaintenanceDue
 from .ops import MaintenanceItem, MaintenanceReport
+from .activecaptain.model import BridgeInfo, HazardInfo, MarinaInfo, PoiType, RoutePoi
 from .papers.model import DocFinding, PapersReport
 from .passage import PassagePlan
 from .weather.compare import ForecastComparison, render_confidence_markdown
@@ -100,6 +101,7 @@ class BriefingInputs:
     forecast_models_note: str | None = None
     clock: Clock | None = None
     parker_text: str | None = None
+    activecaptain_pois: tuple[RoutePoi, ...] = ()
 
 
 # ---------------------------------------------------------------------------
@@ -422,10 +424,81 @@ def _routing_analysis(inp: BriefingInputs) -> str:
 
 def _depth_clearance(inp: BriefingInputs) -> str:
     body = _depth_clearance_hydro(inp) if inp.hydro is not None else _depth_clearance_pending(inp)
+    ac_block = _ac_bridges_hazards(inp)
+    if ac_block:
+        body += "\n\n" + ac_block
     notices = _notices_block(inp)
     if notices:
         body += "\n\n### 5d. Navigational warnings (NGA broadcast / NTM)\n\n" + notices
     return body
+
+
+def _ac_bridges_hazards(inp: BriefingInputs) -> str:
+    if not inp.activecaptain_pois:
+        return ""
+    bridges = [
+        rp for rp in inp.activecaptain_pois
+        if isinstance(rp.poi, BridgeInfo)
+    ]
+    hazards = [
+        rp for rp in inp.activecaptain_pois
+        if isinstance(rp.poi, HazardInfo)
+    ]
+    if not bridges and not hazards:
+        return ""
+
+    v = inp.vessel
+    fleet_clearance = v.air_draft.required_clearance_ft
+    lines = ["### 5c. Bridge clearances & hazards (ActiveCaptain)"]
+
+    if bridges:
+        lines += [
+            "",
+            f"Fleet required clearance: **{fleet_clearance:.0f} ft** "
+            f"(air draft {v.air_draft.planning_ft:.0f} ft + "
+            f"{v.air_draft.clearance_buffer_ft:.0f} ft buffer).",
+            "",
+            "| Bridge | Closed height | Clears? | Type | Dist (NM) | Notes |",
+            "|---|--:|---|---|--:|---|",
+        ]
+        for rp in bridges:
+            b = rp.poi
+            assert isinstance(b, BridgeInfo)
+            nav = b.navigation
+            ht = nav.bridge_closed_height_ft
+            if ht is not None:
+                ht_str = f"{ht:.0f} ft"
+                if ht >= fleet_clearance:
+                    clears = f"✅ +{ht - fleet_clearance:.0f} ft"
+                else:
+                    clears = f"⚠️ **{fleet_clearance - ht:.0f} ft short**"
+            else:
+                ht_str = "unknown"
+                clears = "?"
+            btype = nav.bridge_type or "—"
+            notes = nav.restriction_notes or nav.navigational_notes or "—"
+            if len(notes) > 60:
+                notes = notes[:57] + "…"
+            lines.append(
+                f"| {b.name} | {ht_str} | {clears} | {btype} | {rp.distance_nm:.1f} | {notes} |"
+            )
+
+    if hazards:
+        lines += ["", "**Hazards near route:**", ""]
+        for rp in hazards:
+            h = rp.poi
+            assert isinstance(h, HazardInfo)
+            note = h.navigation.navigational_notes or h.navigation.restriction_notes or ""
+            depth = h.navigation.depth_low_water_ft
+            parts = [f"**{h.name}** ({rp.distance_nm:.1f} NM)"]
+            if depth is not None:
+                parts.append(f"depth {depth:.1f} ft")
+            if note:
+                short = note[:80] + ("…" if len(note) > 80 else "")
+                parts.append(short)
+            lines.append(f"- {' — '.join(parts)}")
+
+    return "\n".join(lines)
 
 
 def _notices_block(inp: BriefingInputs) -> str:
@@ -657,10 +730,17 @@ def _logistics(inp: BriefingInputs) -> str:
     else:
         lines.append(f"- Margin comfortable ({a.fuel_margin_gal:.0f} gal). Jerry cans optional.")
 
+    fuel_block = _ac_fuel_stops(inp)
+    if fuel_block:
+        lines += ["", fuel_block]
+
     lines += ["", "### 7b. Water, provisioning, dinghy access", ""]
     water = _water_block(inp)
     if water:
         lines += [water, ""]
+    marinas_block = _ac_marinas(inp)
+    if marinas_block:
+        lines += [marinas_block, ""]
     if inp.logistics_markdown:
         lines.append(strip_template_preamble(inp.logistics_markdown))
         gaps = coverage_gaps(inp.logistics_markdown)
@@ -685,6 +765,81 @@ def _logistics(inp: BriefingInputs) -> str:
 
     lines += ["", "### 7d. Communications configuration", ""]
     lines.append(_comms_block(inp))
+    return "\n".join(lines)
+
+
+def _ac_fuel_stops(inp: BriefingInputs) -> str:
+    if not inp.activecaptain_pois:
+        return ""
+    fuel_marinas = [
+        rp for rp in inp.activecaptain_pois
+        if isinstance(rp.poi, MarinaInfo) and rp.poi.fuel.has_diesel
+    ]
+    if not fuel_marinas:
+        return ""
+
+    lines = [
+        "### 7a-ii. Diesel stops near route (ActiveCaptain)",
+        "",
+        "| Marina | Dist (NM) | Diesel $/gal | Depth | VHF | Phone | Notes |",
+        "|---|--:|--:|---|---|---|---|",
+    ]
+    for rp in fuel_marinas[:15]:
+        m = rp.poi
+        assert isinstance(m, MarinaInfo)
+        price = f"${m.fuel.diesel_price:.2f}" if m.fuel.diesel_price else "—"
+        depth = f"{m.fuel.fuel_depth_ft:.0f} ft" if m.fuel.fuel_depth_ft else "—"
+        vhf = m.contact.vhf_channel or "—"
+        phone = m.contact.phone or "—"
+        notes = m.fuel.notes or "—"
+        if len(notes) > 50:
+            notes = notes[:47] + "…"
+        lines.append(
+            f"| {m.name} | {rp.distance_nm:.1f} | {price} | {depth} | {vhf} | {phone} | {notes} |"
+        )
+    return "\n".join(lines)
+
+
+def _ac_marinas(inp: BriefingInputs) -> str:
+    if not inp.activecaptain_pois:
+        return ""
+    marinas = [
+        rp for rp in inp.activecaptain_pois
+        if isinstance(rp.poi, MarinaInfo)
+        and not rp.poi.fuel.has_diesel
+    ]
+    transient = [
+        rp for rp in marinas
+        if rp.poi.dockage.transient_slips
+        and rp.poi.dockage.transient_slips not in ("0", "")
+    ]
+    if not transient:
+        return ""
+
+    lines = [
+        "**Transient dockage near route (ActiveCaptain):**",
+        "",
+    ]
+    for rp in transient[:10]:
+        m = rp.poi
+        assert isinstance(m, MarinaInfo)
+        parts = [f"**{m.name}** ({rp.distance_nm:.1f} NM)"]
+        if m.dockage.transient_slips:
+            parts.append(f"{m.dockage.transient_slips} transient slips")
+        if m.contact.vhf_channel:
+            parts.append(f"VHF {m.contact.vhf_channel}")
+        if m.contact.phone:
+            parts.append(m.contact.phone)
+        svc = []
+        if m.services.grocery:
+            svc.append("grocery")
+        if m.services.repair:
+            svc.append("repair")
+        if m.services.fuel_station:
+            svc.append("fuel")
+        if svc:
+            parts.append(", ".join(svc))
+        lines.append(f"- {' — '.join(parts)}")
     return "\n".join(lines)
 
 

@@ -41,6 +41,7 @@ names an environment variable.
 | `var/logistics/` | no | research jobs; hand-researched files | the owner, `--logistics-file` |
 | `var/cache/coops_stations.json` | no | `hydro/tides.py` (30 days) | tides |
 | `var/cache/state_dept/state_dept.json` | no | `consular.py` (24 h) | section 6 |
+| `var/cache/activecaptain/tile_<x>_<y>.db` | no | `activecaptain/client.py` (7 days) | `activecaptain/query.py` |
 | `var/cache/<key>.json` | no | `weather/field.py` (corridor fields) | `solve` |
 | `var/polar_baseline.pol` | no | `export-polar` | qtVlm / OpenCPN / Windy |
 | `var/influx_buffer.jsonl` | no | nothing yet (reserved for write-back) | - |
@@ -70,6 +71,7 @@ names an environment variable.
 | `[infra.signalk]` | `url`, `token_env`, `enabled` (false) | parsed, **not used by any code** |
 | `[infra.ops_panel]` | `db_path` (`../mx-inv/vessel_local.db`), `soon_buffer_days`, `enabled` | maintenance-due read |
 | `[infra.papers]` | `records_dir`, `extra_dirs`, `acquired_after`, `overrides_path`, `enabled` | papers scan |
+| `[infra.activecaptain]` | `token_env`, `env` (stage/production), `cache_dir`, `tile_max_age_days`, `search_radius_nm`, `timeout_s`, `enabled` | crowd-sourced marina/bridge/hazard/anchorage data; see [ActiveCaptain Integration](ActiveCaptain-Integration.md) |
 
 Values marked `# PROVISIONAL` in the file are estimates awaiting measurement. The loader
 (`config.py`) builds frozen dataclasses and raises `ConfigValidationError` on a missing required

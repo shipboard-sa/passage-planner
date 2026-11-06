@@ -647,3 +647,47 @@ friendlier way to edit that same file; there is no need for the JSON-overlay-plu
 **Advanced-options uploads stay**: `papers_file`/`comms_config` in Advanced options are untouched -
 they remain the escape hatch for a one-off override that shouldn't touch the real config file (e.g.
 testing), which the form-based screens intentionally don't support.
+
+
+## Garmin ActiveCaptain Community API for structured marine POI data (RT-D-1)
+
+**Decision** (2026-11-06): use the Garmin ActiveCaptain Community third-party API as
+the structured data source for marinas, fuel docks, bridges, hazards, and anchorages
+along a route. Waterway Guide has no public API and aggressive bot protection;
+ActiveCaptain has a documented developer program, tile-based SQLite exports (offline-first,
+no per-query rate limits once downloaded), and an open-source SDK (Apache 2.0) that
+documents the schema.
+
+**Architecture**: the `activecaptain/` subpackage under `passage_planner/` follows the
+same pattern as `hydro/tides.py` — a client class, a model layer, and a query layer:
+
+1. `client.py` — `ActiveCaptainClient` talks to the API (tiles endpoint, export endpoint),
+   downloads gzipped SQLite tile databases into `var/cache/activecaptain/`, and exposes
+   `near_route(waypoints, radius_nm, poi_types)` that returns `RoutePoi` objects sorted
+   by distance from the nearest waypoint.
+2. `model.py` — frozen dataclasses: `MarinaInfo`, `BridgeInfo`, `HazardInfo`,
+   `AnchorageInfo`, `FuelInfo`, `DockageInfo`, `NavigationInfo`, `ContactInfo`,
+   `ServiceFlags`, `RoutePoi`, plus the `PoiType` enum (bitmask values from the SDK).
+3. `query.py` — SQLite queries against a tile database using the R-tree spatial index
+   (`rIndex`). Resolves `fieldTextHandle` references through the `translations` table.
+   Converts metric values (distanceUnit=2) to feet for the pipeline's imperial convention.
+
+**API workflow** (reverse-engineered from `ActiveCaptainCommunitySDK-android`):
+POST bounding boxes → tile coordinates → POST tiles → export URLs (signed Azure Blob
+Storage) → download gzipped SQLite `.db.gz` → query locally. Auth is an API key header.
+
+**Key data details**:
+- Positions use Garmin semicircle encoding (int32); the query layer converts decimal degrees
+  on the fly via the `rIndex` R-tree.
+- All distance/depth values are stored in meters (distanceUnit=2); converted to feet.
+- JSON-encoded fields (yesNo, labeled, sectionNote, etc.) reference `fieldTextHandle` IDs
+  resolved through the `translations` table (English = langId=1).
+- Tile databases are cached for 7 days; incremental sync is available but not yet wired.
+
+**Feeds into**: briefing sections 5 (bridges/hazards — bridge clearance vs air draft) and
+7 (fuel/marina/logistics — fuel dock depth, diesel availability, VHF/phone, dockage).
+Also available to the shore-logistics research agent as a structured data pre-fill.
+
+**API key**: read from `ACTIVECAPTAIN_API_KEY` env var. Stage vs production controlled by
+`[infra.activecaptain].env` (default `stage`). Stage key approved; production pending Garmin
+review.

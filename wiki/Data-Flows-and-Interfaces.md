@@ -120,6 +120,8 @@ by any fetcher** ([Data Model](Data-Model.md#configsourcestoml-config_version--1
 | opentopodata | `api.opentopodata.org/v1/gebco2020` | coarse depth triage (deep water or not) | `hydro/bathy.py` | <= 100 points/call, >= 1.1 s between calls (free tier) |
 | U.S. State Department | `cadataapi.state.gov/api/TravelAdvisories`, `/api/CountryTravelInformation` | advisory level/date/reason/link, embassy contact | `consular.py` | cached 24 h in `var/cache/state_dept/`; Cloudflare 429s on bursts (spaced, retried); sometimes serves an older edition, so fetched several times and the newest record per country wins; stale cache used with a note |
 
+| Garmin ActiveCaptain | `activecaptain[-stage].garmin.com/community/thirdparty/api/v2/points-of-interest/{tiles,export}` | marinas, fuel, bridges, hazards, anchorages near the route (crowd-sourced) | `activecaptain/client.py` | tile-based SQLite export (not per-query REST); tiles cached 7 days under `var/cache/activecaptain/`; R-tree spatial query; `apikey` header; stage/production env; see [ActiveCaptain Integration](ActiveCaptain-Integration.md) |
+
 **Paid data:** none is used. Considered 2026-09-21: free winds and currents are good enough; money is
 better spent on a human forecaster (a marine forecaster, optional paste-in) and possibly a short
 PredictWind term as a solver benchmark (Roadmap). A Copernicus Marine account exists as a fallback

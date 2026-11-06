@@ -48,6 +48,9 @@ Automation on the Pi `boat-automation` (192.168.1.10), which this project does *
    countries), the picker, maintenance of the data file.
 10. **[Logistics research design](Logistics-Research-Design.md)** - "Research with Claude": design
     record, decisions, live results.
+11. **[ActiveCaptain Integration](ActiveCaptain-Integration.md)** - Garmin's crowd-sourced marina,
+    fuel, bridge, hazard and anchorage data: API workflow, tile-based SQLite export model, data
+    schema, briefing wiring, configuration, limitations.
 
 ## At a glance
 
@@ -61,7 +64,7 @@ Automation on the Pi `boat-automation` (192.168.1.10), which this project does *
 | **Output** | `.md` / `.html` / `.docx` briefing (sections 1-9), optional filled USPS Float Plan PDF, `solve` GPX, `sweep` table |
 | **Tests** | 561 passing (`pytest -q`, 2026-10-07), ruff clean, `mypy --strict`; GitHub Actions CI (quality + Docker image job) |
 | **Auth** | none; LAN / tailnet trust boundary, exposure = mx-inv's `:8000` |
-| **External data** | keyless public APIs (Open-Meteo, NHC, NGA, NOAA, opentopodata, State Dept); no paid data; Claude Code CLI on the owner's subscription for research |
+| **External data** | keyless public APIs (Open-Meteo, NHC, NGA, NOAA, opentopodata, State Dept); Garmin ActiveCaptain (free API key, tile-based SQLite); Claude Code CLI on the owner's subscription for research |
 | **Polar** | PROVISIONAL `config/baseline.pol` (fallback) - the InfluxDB `polar_baseline` it used to read was retired 2026-10-06; re-point open |
 | **Status** | complete and in use; `solve`/`sweep` EXPERIMENTAL; step 7 (current calibration) waits on the shakedown passage |
 

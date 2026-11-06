@@ -233,12 +233,30 @@ class PapersConfig:
 
 
 @dataclass(frozen=True, slots=True)
+class ActiveCaptainConfig:
+    token_env: str
+    env: str                         # "stage" or "production"
+    cache_dir: str
+    tile_max_age_days: int
+    search_radius_nm: float
+    timeout_s: float
+    enabled: bool
+
+    def token(self) -> str:
+        value = os.environ.get(self.token_env, "")
+        if self.enabled and not value:
+            raise MissingSecretError(self.token_env, "ActiveCaptain API key")
+        return value
+
+
+@dataclass(frozen=True, slots=True)
 class InfraConfig:
     timezone: str
     influx: InfluxConfig
     signalk: SignalKConfig
     ops_panel: OpsPanelConfig | None = None
     papers: PapersConfig | None = None
+    activecaptain: ActiveCaptainConfig | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -746,7 +764,21 @@ def _parse_infra(raw: dict[str, Any], fn: str) -> InfraConfig:
             enabled=bool(pp_raw.get("enabled", True)),
         )
 
-    return InfraConfig(timezone, influx, signalk, ops_panel, papers)
+    activecaptain: ActiveCaptainConfig | None = None
+    if "activecaptain" in raw:
+        actx = "infra.activecaptain"
+        ac_raw = _table(raw, "activecaptain", fn, ctx)
+        activecaptain = ActiveCaptainConfig(
+            token_env=_str(ac_raw, "token_env", fn, actx),
+            env=_str(ac_raw, "env", fn, actx, default="production"),
+            cache_dir=_str(ac_raw, "cache_dir", fn, actx, default="var/cache"),
+            tile_max_age_days=int(_num(ac_raw, "tile_max_age_days", fn, actx, default=7.0)),
+            search_radius_nm=_num(ac_raw, "search_radius_nm", fn, actx, default=10.0, positive=True),
+            timeout_s=_num(ac_raw, "timeout_s", fn, actx, default=60.0, positive=True),
+            enabled=bool(ac_raw.get("enabled", True)),
+        )
+
+    return InfraConfig(timezone, influx, signalk, ops_panel, papers, activecaptain)
 
 
 def _parse_vessel(raw: dict[str, Any]) -> VesselConfig:

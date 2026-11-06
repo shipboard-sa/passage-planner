@@ -165,3 +165,15 @@ class ConsularFetchError(ConsularError):
 
 class ConsularParseError(ConsularError):
     """A State Department feed was not the JSON shape we expect."""
+
+
+class ActiveCaptainError(RoutingError):
+    """Base for Garmin ActiveCaptain Community data failures."""
+
+
+class ActiveCaptainFetchError(ActiveCaptainError):
+    """The ActiveCaptain API was unreachable, timed out, or returned an error."""
+
+
+class ActiveCaptainDataError(ActiveCaptainError):
+    """A downloaded tile database is missing, corrupt, or has an unexpected schema."""

@@ -181,3 +181,14 @@ extra_dirs = ["../../Insurance"]
 acquired_after = "2025-01-01"         # Your Vessel was bought spring 2025
 overrides_path = "config/papers.toml" # hand/Claude-supplied issue+expiry dates per doc
 enabled = true
+
+[infra.activecaptain]
+# Garmin ActiveCaptain Community tile-based POI data (marinas, fuel, bridges,
+# anchorages, hazards). Requires an API key from Garmin's developer program.
+token_env = "ACTIVECAPTAIN_API_KEY"
+env = "stage"                        # "stage" or "production"
+cache_dir = "var/cache"              # tiles cached under <cache_dir>/activecaptain/
+tile_max_age_days = 7
+search_radius_nm = 10.0              # corridor width around each waypoint
+timeout_s = 60.0
+enabled = true

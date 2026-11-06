@@ -64,7 +64,7 @@ resolve its assets; use the dev server for standalone work.
 | Module | Role |
 |---|---|
 | `config.py` | TOML loader (`vessel.toml`, `sources.toml`) -> frozen dataclasses; secrets read from env by name; `HYLAS_INFLUX_URL` override. Pure apart from reading the files. |
-| `errors.py` | One root `RoutingError`; per-subsystem branches (`ConfigError` incl. `MissingSecretError`, `RouteError`, `PolarError`, `InfluxError`, `OpsPanelError`, `PapersError`, `HydroError`, `WeatherError`, `FloatPlanError`, `CommsError`, `NoticeError`, `CoastalError`, research errors). |
+| `errors.py` | One root `RoutingError`; per-subsystem branches (`ConfigError` incl. `MissingSecretError`, `RouteError`, `PolarError`, `InfluxError`, `OpsPanelError`, `PapersError`, `HydroError`, `WeatherError`, `FloatPlanError`, `CommsError`, `NoticeError`, `CoastalError`, `ActiveCaptainError` incl. `ActiveCaptainFetchError` / `ActiveCaptainDataError`, research errors). |
 | `geo.py` | Spherical geodesy: haversine, bearing, destination point, TWA, point-of-sail label, along-course current component. |
 | `route.py` | GPX -> `Route` (rte-then-trk, namespace-agnostic). |
 | `passage.py` | Route + departure + speed -> timed fixes (`PassagePlan.sample_fixes`). |
@@ -91,6 +91,7 @@ resolve its assets; use the dev server for standalone work.
 | `arrival.py` | Arrival-places schema, validator, loader, nearest lookup, merge CLI (`python -m passage_planner.arrival`). |
 | `research.py` | Research with Claude: prompt, CLI discovery, child env, subprocess run, reply validation. |
 | `research_jobs.py` | In-memory job registry: one job at a time, one port per subprocess, saves ok ports to `var/logistics/`. In `src/` so the test/mypy gate covers it. |
+| `activecaptain/` | Garmin ActiveCaptain Community API client: tile download, SQLite cache, R-tree spatial query. `client.py` (API + cache), `query.py` (SQLite), `model.py` (dataclasses). See [ActiveCaptain Integration](ActiveCaptain-Integration.md). |
 | `influx.py` | Read-only InfluxDB client (now pointed at a retired server - see Data Flows). |
 | `ops.py` | Read-only sqlite pull of maintenance due from mx-inv's `vessel_local.db`. |
 | `floatplan.py` | Fills the USPS Float Plan AcroForm (`pypdf`); crew roster loader. |
