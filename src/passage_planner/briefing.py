@@ -810,7 +810,8 @@ def _ac_marinas(inp: BriefingInputs) -> str:
     ]
     transient = [
         rp for rp in marinas
-        if rp.poi.dockage.transient_slips
+        if isinstance(rp.poi, MarinaInfo)
+        and rp.poi.dockage.transient_slips
         and rp.poi.dockage.transient_slips not in ("0", "")
     ]
     if not transient:
