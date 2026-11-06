@@ -51,8 +51,8 @@ def test_add_edit_rename_and_remove_a_boat(client: TestClient, tmp_path: Path) -
     assert resp.status_code == 200
     assert (tmp_path / "config" / "fleet.json").is_file()
     ids = [b["id"] for b in resp.json()["boats"]]
-    assert ids == ["sv_salt_cat", "sv_example_buddy"]  # saved list keeps the seeded boat too
-    assert resp.json()["usual"] == ["sv_salt_cat", "sv_example_buddy"]
+    assert ids == ["sv_example_buddy", "sv_salt_cat"]  # saved list keeps the seeded boat too
+    assert resp.json()["usual"] == ["sv_example_buddy", "sv_salt_cat"]
 
     edited = client.put("/api/fleet", json={"boat": {**CAT, "air_draft_ft": 64.0}}).json()
     assert next(b for b in edited["boats"] if b["id"] == "sv_salt_cat")["air_draft_ft"] == 64.0
@@ -60,7 +60,7 @@ def test_add_edit_rename_and_remove_a_boat(client: TestClient, tmp_path: Path) -
     renamed = client.put(
         "/api/fleet", json={"boat": {**CAT, "name": "SV Salt Cat II"}, "replaces": "sv_salt_cat"}
     ).json()
-    assert [b["id"] for b in renamed["boats"]] == ["sv_salt_cat_ii", "sv_example_buddy"]
+    assert [b["id"] for b in renamed["boats"]] == ["sv_example_buddy", "sv_salt_cat_ii"]
 
     gone = client.delete("/api/fleet/sv_salt_cat_ii")
     assert gone.status_code == 200 and [b["id"] for b in gone.json()["boats"]] == [
@@ -85,7 +85,7 @@ def test_the_post_routes_the_web_form_uses_match_put_and_delete(client: TestClie
     # mx-inv's /routing proxy only forwards GET and POST, so the form uses these.
     saved = client.post("/api/fleet", json={"boat": CAT})
     assert saved.status_code == 200
-    assert [b["id"] for b in saved.json()["boats"]] == ["sv_salt_cat", "sv_example_buddy"]
+    assert [b["id"] for b in saved.json()["boats"]] == ["sv_example_buddy", "sv_salt_cat"]
     gone = client.post("/api/fleet/sv_salt_cat/remove")
     assert gone.status_code == 200
     assert [b["id"] for b in gone.json()["boats"]] == ["sv_example_buddy"]
@@ -202,7 +202,7 @@ def test_research_uses_the_chosen_fleet_and_rejects_an_unknown_boat(
     monkeypatch.setattr(backend, "_RESEARCH", FakeJobs())
     client.put("/api/fleet", json={"boat": CAT})
     assert client.post("/api/logistics-research", data={"ports": "Nassau\n"}).status_code == 200
-    assert sorted(seen["buddies"]) == ["SV Salt Cat", "SV Example Buddy"]  # usual companions
+    assert sorted(seen["buddies"]) == ["SV Example Buddy", "SV Salt Cat"]  # usual companions
     client.post("/api/logistics-research", data={"ports": "Nassau\n", "fleet": '["sv_salt_cat"]'})
     assert seen["buddies"] == ["SV Salt Cat"]
     client.post("/api/logistics-research", data={"ports": "Nassau\n", "fleet": "[]"})
