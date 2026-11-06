@@ -144,7 +144,7 @@ def test_watch_table_long_passage_rotates_all_crew() -> None:
     inp = _inputs(crew=("Skipper", "Mate", "Sam"), watch_hours=6.0)
     long_analysis = replace(inp.analysis, eta=inp.analysis.depart + timedelta(hours=36))
     md = build_briefing(replace(inp, analysis=long_analysis))
-    assert "**Skipper**" in md and "**mate**" in md and "**Sam**" in md
+    assert "**Skipper**" in md and "**Mate**" in md and "**Sam**" in md
 
 
 def test_bahamas_ciq_populates() -> None:

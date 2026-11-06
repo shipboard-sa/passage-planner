@@ -1,0 +1,52 @@
+# Static float-plan facts -- the fields on the USPS Float Plan (v10.2) that
+# don't come from vessel.toml or the passage plan. Filled once, reused every
+# passage. See `passage-planner float-plan --help`.
+
+[vessel]
+hailing_port = "Your City, ST"
+official_number = "000000"
+hin = "ABC12345X000"
+vessel_type = "Cutter"
+hull_material = "Fiberglass"
+hull_trim_colors = "White hull"
+prominent_features = "Example vessel description"
+anchor_line_length_ft = 300.0
+
+[comms]
+call_sign = "WXY0000"
+radio1_type = "VHF-FM"
+radio1_freq_mon = "16/9"
+radio2_type = "VHF-FM"
+radio2_freq_mon = "16/9"
+cell_sat_phone = "Satellite communicator"
+operator_email = "skipper@example.com"
+epirb_uin = ""
+tracking_note = ""
+
+[equipment]
+aboard = [
+  "NAV-Radar", "NAV-Compass", "NAV-Maps", "NAV-DepthSounder", "NAV-GPS", "NAV-Charts",
+  "VDS-EDL", "VDS-Flag", "VDS-FlareAerial", "VDS-FlareHandheld", "VDS-SignalMirror",
+  "ADS-Horn", "ADS-Whistle",
+  "ADD-Anchor", "ADD-FireExtinguisher", "ADD-Flashlight", "ADD-Raft", "ADD-FoodAvail",
+  "ADD-Dewatering", "ADD-Water",
+]
+
+[operator]
+name = "Jane Skipper"
+address = "123 Harbor Drive"
+city = "Your City"
+state = "ST"
+zip = "00000"
+phone = "555-000-0001"
+gender = "M"
+dob = "1964-01-30"
+plb_uin = ""
+
+[contacts]
+contact1_name = "Shore Contact"
+contact1_phone = "555-000-0003"
+contact2_name = "Second Contact"
+contact2_phone = "555-000-0004"
+rescue_authority = "TowBoatUS"
+rescue_authority_phone = "1-800-391-4869"

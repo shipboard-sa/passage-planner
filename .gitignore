@@ -8,8 +8,6 @@ var/
 routes/
 dist/
 node_modules/
-config/crew.toml
-config/float_plan.toml
 config/papers.toml
 CHECKPOINT.md
 CLAUDE.md

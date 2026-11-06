@@ -8,7 +8,7 @@ config_version = 1
 
 [vessel]
 name = "Your Vessel"
-model = "Your Boat Model"
+model = "your vessel"
 designer = "Your Designer"
 rig = "cutter"
 year = 1990
@@ -111,14 +111,14 @@ sounder_depth_path = "environment.depth.belowTransducer"   # confirm exact path 
 # keel counts at its keel-UP draft; the keel-down draft is for open water only) and
 # the tallest air draft, not this vessel's alone.
 [[buddy_boat]]
-name = "SV Steel Breeze"
-mmsi = "000000001"     # call sign XXXXXX, per MarineTraffic 2026-09-22
-draft_ft = 14.0        # keel + rudder DOWN: open-water sailing only, NOT used at ports/anchorages
+name = "SV Example Buddy"
+mmsi = "000000001"
+draft_ft = 14.0
 lifting_keel = true
-draft_up_ft = 8.0      # keel UP - ~7-8 ft, the draft for arrival, departure and anchoring
+draft_up_ft = 8.0
 air_draft_ft = 90.0
-telemetry = false      # minimally instrumented - no live data from her
-notes = "Custom 63' steel, former open-ocean racer, new deck for cruising. Lifting keel + rudder: 14 ft down / ~8 ft up - sails keel-up off the wind, so shared anchorages match Your Vessel. Much bigger/faster; racier polar, especially upwind. Experienced sailors, new to cruising. Joint planning."
+telemetry = false
+notes = "Example buddy boat entry. Replace with your actual buddy boat details."
 
 [shore_contact]
 # Designated shore agent for float plans. Goes into the generated float-plan

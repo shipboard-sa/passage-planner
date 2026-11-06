@@ -140,7 +140,7 @@ def render_parker_markdown(parker: ParkerForecast, comparison: ParkerComparison)
     whether to include this at all - see the module docstring's "absent
     means omitted" note; this function assumes the caller already has text
     to render."""
-    lines = [f"**[Professional Forecast: Marine Forecast Service]** {parker.header}".rstrip()]
+    lines = [f"**[Professional Forecast: Marine Weather Center]** {parker.header}".rstrip()]
     delta = comparison.delta_kn
     if comparison.parker_peak_wind_kn is not None and delta is not None:
         lines.append(

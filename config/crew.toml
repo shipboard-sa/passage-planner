@@ -1,0 +1,21 @@
+# The regular crew, for the USPS Float Plan's persons-on-board block.
+# `--crew` looks names up here by `key` (case-insensitive); a name not found
+# here is filled with nothing but its name, or given inline as
+# "Name:phone:gender:YYYY-MM-DD" to add someone not in this file for one
+# passage -- see `passage-planner float-plan --help`.
+
+[[crew]]
+key = "skipper"
+name = "Jane Skipper"
+phone = "555-000-0001"
+gender = "M"
+dob = "1964-01-30"
+plb_uin = ""
+
+[[crew]]
+key = "mate"
+name = "Alex Mate"
+phone = "555-000-0002"
+gender = "F"
+dob = "1965-03-31"
+plb_uin = ""
