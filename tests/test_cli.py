@@ -46,7 +46,7 @@ def test_brief_writes_three_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
     assert "# Passage Briefing" in md
     assert "Click2Clear" in md  # Bahamas CIQ
     assert "SV Example Buddy" in md  # buddy boat from shipped config
-    assert "CDT" in md  # times are boat-local, not UTC
+    assert "CDT" in md or "CST" in md  # times are boat-local, not UTC
 
 
 def test_brief_wires_nga_notices(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
