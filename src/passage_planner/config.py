@@ -773,7 +773,9 @@ def _parse_infra(raw: dict[str, Any], fn: str) -> InfraConfig:
             env=_str(ac_raw, "env", fn, actx, default="production"),
             cache_dir=_str(ac_raw, "cache_dir", fn, actx, default="var/cache"),
             tile_max_age_days=int(_num(ac_raw, "tile_max_age_days", fn, actx, default=7.0)),
-            search_radius_nm=_num(ac_raw, "search_radius_nm", fn, actx, default=10.0, positive=True),
+            search_radius_nm=_num(
+                ac_raw, "search_radius_nm", fn, actx, default=10.0, positive=True,
+            ),
             timeout_s=_num(ac_raw, "timeout_s", fn, actx, default=60.0, positive=True),
             enabled=bool(ac_raw.get("enabled", True)),
         )

@@ -32,6 +32,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
+from .activecaptain import ActiveCaptainClient, RoutePoi
 from .analysis import PassageAnalysis, refine
 from .briefing import BriefingInputs, build_briefing
 from .clock import Clock, timezonefinder_resolver
@@ -39,6 +40,7 @@ from .comms import load_comms_config
 from .config import AppConfig, VesselConfig, load
 from .consular import ConsularReport, advisory_warnings, build_consular_report
 from .errors import (
+    ActiveCaptainError,
     CommsError,
     FloatPlanError,
     HydroError,
@@ -71,9 +73,6 @@ from .weather import fetch_forecast_comparison, fetch_route_forecast, fetch_trop
 from .weather.compare import ForecastComparison
 from .weather.model import RouteForecast
 from .weather.tropical import TropicalOutlook
-
-from .activecaptain import ActiveCaptainClient, RoutePoi
-from .errors import ActiveCaptainError, MissingSecretError
 
 
 @dataclass(frozen=True)

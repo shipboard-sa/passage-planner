@@ -42,6 +42,7 @@ from .marine_forecaster import compare_with_model, render_parker_markdown
 from .marine_forecaster import parse as parse_parker
 from .ciq import render_dossier
 from .clock import Clock
+from .activecaptain.model import BridgeInfo, HazardInfo, MarinaInfo, RoutePoi
 from .comms import CommsConfig, render_comms
 from .config import VesselConfig
 from .consular import ConsularReport, render_consular_markdown
@@ -50,7 +51,6 @@ from .logistics import coverage_gaps, strip_template_preamble
 from .notices import NoticeReport, render_notices_markdown
 from .ops import DueStatus as MaintenanceDue
 from .ops import MaintenanceItem, MaintenanceReport
-from .activecaptain.model import BridgeInfo, HazardInfo, MarinaInfo, PoiType, RoutePoi
 from .papers.model import DocFinding, PapersReport
 from .passage import PassagePlan
 from .weather.compare import ForecastComparison, render_confidence_markdown
